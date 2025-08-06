@@ -1,6 +1,6 @@
 {
   "name": "@goshgame/antd-mobile",
-  "version": "5.43.0",
+  "version": "5.43.1",
   "homepage": "https://github.com/ant-design/ant-design-mobile#readme",
   "bugs": {
     "url": "https://github.com/ant-design/ant-design-mobile/issues"
@@ -41,7 +41,7 @@
     "pub:dev": "npm publish ./lib --tag dev",
     "size-limit": "size-limit",
     "size-limit:ci": "size-limit --json",
-    "start": "dumi dev",
+    "start": "node --openssl-legacy-provider ./node_modules/.bin/dumi dev",
     "test": "jest",
     "ci-install-react-19": "pnpm i react@19 react-dom@19",
     "test-with-coverage": "jest --coverage"
