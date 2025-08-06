@@ -1,4 +1,4 @@
-import { Button, Space } from 'antd-mobile'
+import { Button, Space, Toast } from 'antd-mobile'
 import { DownOutline, UpOutline } from 'antd-mobile-icons'
 import { DemoBlock } from 'demos'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -53,6 +53,9 @@ export default () => {
           content={content}
           expandText='展开'
           collapseText='收起'
+          onExpand={ellipsis => {
+            Toast.show(`${ellipsis ? '展开' : '收起'}了`)
+          }}
         />
       </DemoBlock>
 

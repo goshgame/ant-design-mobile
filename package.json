@@ -43,7 +43,7 @@
     "size-limit:ci": "size-limit --json",
     "start": "dumi dev",
     "test": "jest",
-    "bun-install-react-19": "bun remove react react-dom && bun add --no-save react@19 react-dom@19",
+    "ci-install-react-19": "pnpm i react@19 react-dom@19",
     "test-with-coverage": "jest --coverage"
   },
   "lint-staged": {
@@ -52,8 +52,8 @@
     "*.{css,less,scss}": "stylelint --fix"
   },
   "resolutions": {
-    "@types/react": "18",
-    "@types/react-dom": "18"
+    "@types/react": "18.3.23",
+    "@types/react-dom": "18.3.7"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.4.2",
@@ -102,9 +102,9 @@
     "@types/jest-axe": "3.5.4",
     "@types/lodash": "^4.14.194",
     "@types/node": "^18.15.13",
-    "@types/react": "^18.0.38",
+    "@types/react": "^18.3.23",
     "@types/react-beautiful-dnd": "^13.1.4",
-    "@types/react-dom": "^18.0.11",
+    "@types/react-dom": "^18.3.7",
     "@types/react-helmet": "^6.1.6",
     "@types/react-is": "^17.0.3",
     "@types/react-virtualized": "^9.21.21",
@@ -175,8 +175,8 @@
     "webpack-stream": "^7.0.0"
   },
   "peerDependencies": {
-    "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
-    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
   },
   "publishConfig": {
     "@goshgame:registry": "https://npm.pkg.github.com"

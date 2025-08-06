@@ -19,8 +19,13 @@ export type EllipsisProps = {
   collapseText?: ReactNode
   stopPropagationForActionButtons?: PropagationEvent[]
   onContentClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
-  onExpand?: (expanded: boolean) => void
   defaultExpanded?: boolean
+  onExpand?: (
+    expanded: boolean,
+    info: {
+      event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+    }
+  ) => void
 } & NativeProps
 
 const defaultProps = {
@@ -50,7 +55,6 @@ export const Ellipsis = forwardRef<EllipsisRef, EllipsisProps>((p, ref) => {
     stopPropagationForActionButtons,
     onContentClick,
     defaultExpanded,
-    onExpand,
   } = props
 
   // ============================ Refs ============================
@@ -73,9 +77,11 @@ export const Ellipsis = forwardRef<EllipsisRef, EllipsisProps>((p, ref) => {
     ? withStopPropagation(
         stopPropagationForActionButtons,
         <a
-          onClick={() => {
-            onExpand && onExpand(true)
+          onClick={e => {
             setExpanded(true)
+            props.onExpand?.(true, {
+              event: e,
+            })
           }}
         >
           {expandText}
@@ -87,9 +93,11 @@ export const Ellipsis = forwardRef<EllipsisRef, EllipsisProps>((p, ref) => {
     ? withStopPropagation(
         stopPropagationForActionButtons,
         <a
-          onClick={() => {
-            onExpand && onExpand(false)
+          onClick={e => {
             setExpanded(false)
+            props.onExpand?.(false, {
+              event: e,
+            })
           }}
         >
           {collapseText}

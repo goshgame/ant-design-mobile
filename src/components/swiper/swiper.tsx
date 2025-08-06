@@ -379,7 +379,7 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
               <div
                 className={`${classPrefix}-slide-placeholder`}
                 style={{
-                  width: `${startIndex * 100}%`,
+                  [isVertical ? 'height' : 'width']: `${startIndex * 100}%`,
                 }}
               />
               {items}
