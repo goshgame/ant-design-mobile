@@ -35,6 +35,7 @@ export type TabsProps = {
   onChange?: (key: string) => void
   children?: ReactNode
   direction?: 'ltr' | 'rtl'
+  disableAutoFocus?: boolean
   /**
    * @experimental Support disabled auto scroll when Tabs header content change.
    * This API name or function may change in the future.
@@ -290,10 +291,10 @@ export const Tabs: FC<TabsProps> = p => {
   }
 
   useEffect(() => {
-    if (activeKey && tabRefs.current[activeKey]) {
+    if (activeKey && tabRefs.current[activeKey] && !props.disableAutoFocus) {
       tabRefs.current[activeKey]?.focus()
     }
-  }, [activeKey])
+  }, [activeKey, props.disableAutoFocus])
 
   return withNativeProps(
     props,

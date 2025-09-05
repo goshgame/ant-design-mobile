@@ -30,6 +30,7 @@
 | onChange | 切换面板的回调 | `(key: string) => void` | - |
 | stretch | 选项卡头部是否拉伸 | `boolean` | `true` |
 | direction | 文档排版方向 | `'ltr' \| 'rtl'` | `'ltr'` |
+| disableAutoFocus | 是否取消自动聚焦到可视区 | `boolean` | `false` |
 
 ### CSS 变量
 
