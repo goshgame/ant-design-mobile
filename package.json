@@ -30,7 +30,7 @@
   ],
   "scripts": {
     "build": "gulp",
-    "build-doc": "dumi build && echo '!.*' > dist/.surgeignore",
+    "build-doc": "node --openssl-legacy-provider ./node_modules/dumi/bin/dumi.js build && echo '!.*' > dist/.surgeignore",
     "postinstall": "husky install",
     "lint": "eslint . && stylelint \"**/*.{css,less,scss}\"",
     "lint:fix": "prettier --write . && eslint --fix . && stylelint --fix \"**/*.{css,less,scss}\"",
@@ -41,7 +41,7 @@
     "pub:dev": "npm publish ./lib --tag dev",
     "size-limit": "size-limit",
     "size-limit:ci": "size-limit --json",
-    "start": "node --openssl-legacy-provider ./node_modules/.bin/dumi dev",
+    "start": "node --openssl-legacy-provider ./node_modules/dumi/bin/dumi.js dev",
     "test": "jest",
     "ci-install-react-19": "pnpm i react@19 react-dom@19",
     "test-with-coverage": "jest --coverage"

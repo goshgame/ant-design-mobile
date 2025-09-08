@@ -1,12 +1,12 @@
-import React, { useContext, useLayoutEffect, useState } from 'react'
 import type { IRouteComponentProps } from '@umijs/types'
 import { context, Link } from 'dumi/theme'
+import React, { useContext, useLayoutEffect, useState } from 'react'
+import Dark from '../components/Dark'
 import Navbar from '../components/Navbar'
 import SideMenu from '../components/SideMenu'
-import Dark from '../components/Dark'
 import { SlugList } from '../components/slug-list'
-import '../style/layout-default.less'
 import '../style/global.less'
+import '../style/layout-default.less'
 import styles from './index.less'
 
 const Features = (features: any) => (
@@ -53,12 +53,12 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
       return
     }
 
-    if (
-      window.innerWidth <= 600 &&
-      !window.location.pathname.startsWith('/gallery')
-    ) {
-      window.location.href = '/gallery'
-    }
+    // if (
+    //   window.innerWidth <= 600 &&
+    //   !window.location.pathname.startsWith('/gallery')
+    // ) {
+    //   window.location.href = '/gallery'
+    // }
   }, [])
 
   return (

@@ -1,13 +1,19 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { List, NavBar, Popover, SafeArea, SearchBar } from 'antd-mobile'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 // @ts-ignore
 import ComponentConfig from '@@/dumi/config'
 // @ts-ignore
 import DemosConfig from '@@/dumi/demos'
-import styles from './gallery.less'
-import classNames from 'classnames'
 import { useDebounceEffect } from 'ahooks'
+import classNames from 'classnames'
 import { cloneDeep } from 'lodash'
+import styles from './gallery.less'
+
+declare global {
+  interface Window {
+    routerBase: string
+  }
+}
 
 type ComponentGroup = {
   title: string
@@ -117,6 +123,7 @@ export default props => {
         <div className={classNames(styles.body, styles.demoBody)}>
           <iframe
             src={
+              window.routerBase +
               '/~demos/' +
               componentToDemoPaths[currentComponent][currentDemoIndex]
             }
