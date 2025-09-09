@@ -2,6 +2,9 @@ name: Deploy Docs
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - master
 
 env:
   AWS_REGION: 'ap-southeast-1'
