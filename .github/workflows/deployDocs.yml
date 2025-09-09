@@ -2,6 +2,7 @@ name: Deploy Docs
 
 on:
   workflow_dispatch:
+
 env:
   AWS_REGION: 'ap-southeast-1'
   S3_BUCKET: 's3://fe-studio.gosh.com/antdMobile'
@@ -9,61 +10,41 @@ env:
 
 jobs:
   build:
+    if: github.repository == 'goshgame/ant-design-mobile'
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Configure Git to use Access Token
-        run: |
-          git config --global url."https://x-access-token:${{ secrets.CY_DEPLOY }}@github.com/".insteadOf "https://github.com/"
-
-      - name: Update git submodules from remote
-        run: |
-          git submodule update --init --recursive --remote
-
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 8
-
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           registry-url: https://npm.pkg.github.com/
-          cache: 'pnpm'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: npm install
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
 
-      - name: build
-        run: |
-          pnpm run build-doc
+      - name: Build docs
+        run: npm run build-doc
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Sync Static files to S3
-        run: |
-          aws s3 sync $DIST_PATH $S3_BUCKET --delete
+        run: aws s3 sync $DIST_PATH $S3_BUCKET --delete
 
-      - name: commit and push submodule version to latest
-        run: |
-          git config --global user.email "action@github.com"
-          git config --global user.name "GitHub Action"
-          git add .
-          if ! git diff --cached --quiet; then
-            git commit -m "deploy antd-mobile docs to antdMobile directory"
-            git pull origin master --rebase
-            git push origin master
-          else
-            echo "No changes to commit"
-          fi
+  skipped:
+    if: github.repository != 'goshgame/ant-design-mobile'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skip deployment
+        run: echo "Skipped deployment - this is a fork, only main repo runs deploy."
