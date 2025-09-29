@@ -44,6 +44,12 @@ Use `total` with `renderProps` for render. Not support `loop`
 
 <code src="./demos/demo7.tsx" debug></code>
 
+### RTL Support
+
+RTL mode only takes effect when the `direction` prop is `horizontal`.
+
+<code src="./demos/demo-rtl.tsx"></code>
+
 ## Swiper
 
 ### Props

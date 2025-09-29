@@ -48,6 +48,7 @@ export type SwiperProps = {
   autoplayInterval?: number
   loop?: boolean
   direction?: 'horizontal' | 'vertical'
+  docDirection?: 'ltr' | 'rtl'
   onIndexChange?: (index: number) => void
   onIndexChangeEnd?: (index: number) => void
   indicatorProps?: Pick<PageIndicatorProps, 'color' | 'style' | 'className'>
@@ -75,6 +76,7 @@ const defaultProps = {
   autoplayInterval: 3000,
   loop: false,
   direction: 'horizontal',
+  docDirection: 'ltr',
   slideSize: 100,
   trackOffset: 0,
   stuckAtBoundary: true,
@@ -100,6 +102,8 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
 
     const slideRatio = props.slideSize / 100
     const offsetRatio = props.trackOffset / 100
+    const isRtl =
+      props.direction === 'horizontal' && props.docDirection === 'rtl'
 
     const { validChildren, count, renderChildren } = useMemo(() => {
       let count = 0
@@ -144,6 +148,7 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
       if (slideRatio * (mergedTotal - 1) < 1) {
         loop = false
       }
+      console.log('rtl-swiper', isRtl, props)
       const trackRef = useRef<HTMLDivElement>(null)
 
       function getSlidePixels() {
@@ -169,7 +174,9 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
 
       const [{ position }, api] = useSpring(
         () => ({
-          position: boundIndex(current) * 100,
+          position: isRtl
+            ? -boundIndex(current) * 100
+            : boundIndex(current) * 100,
           config: springConfig, // { tension: 200, friction: 30 }
           onRest: () => {
             if (draggingRef.current) return
@@ -239,8 +246,12 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
           bounds: () => {
             if (loop) return {}
             const slidePixels = getSlidePixels()
-            const lowerBound = boundIndex(0) * slidePixels
-            const upperBound = boundIndex(mergedTotal - 1) * slidePixels
+            const lowerBound = isRtl
+              ? -boundIndex(count - 1) * slidePixels
+              : boundIndex(0) * slidePixels
+            const upperBound = isRtl
+              ? -boundIndex(0) * slidePixels
+              : boundIndex(count - 1) * slidePixels
             return isVertical
               ? {
                   top: lowerBound,
@@ -261,7 +272,7 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
       )
 
       function swipeTo(index: number, immediate = false) {
-        const roundedIndex = Math.round(index)
+        const roundedIndex = isRtl ? -Math.round(index) : Math.round(index)
         const targetIndex = loop
           ? modulus(roundedIndex, mergedTotal)
           : bound(roundedIndex, 0, mergedTotal - 1)
@@ -274,7 +285,9 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
         setCurrent(targetIndex)
 
         const animations = api.start({
-          position: (loop ? roundedIndex : boundIndex(roundedIndex)) * 100,
+          position: isRtl
+            ? -(loop ? roundedIndex : boundIndex(roundedIndex)) * 100
+            : (loop ? roundedIndex : boundIndex(roundedIndex)) * 100,
           immediate,
         })
 
@@ -289,11 +302,15 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
       }
 
       function swipeNext() {
-        swipeTo(Math.round(position.get() / 100) + 1)
+        isRtl
+          ? swipeTo(Math.round(position.get() / 100) - 1)
+          : swipeTo(Math.round(position.get() / 100) + 1)
       }
 
       function swipePrev() {
-        swipeTo(Math.round(position.get() / 100) - 1)
+        isRtl
+          ? swipeTo(Math.round(position.get() / 100) + 1)
+          : swipeTo(Math.round(position.get() / 100) - 1)
       }
 
       useImperativeHandle(ref, () => ({
@@ -339,14 +356,18 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
         if (loop) {
           itemStyle = {
             [isVertical ? 'y' : 'x']: position.to(position => {
-              let finalPosition = -position + index * 100
+              let finalPosition = isRtl
+                ? -position - index * 100
+                : -position + index * 100
               const totalWidth = mergedTotal * 100
               const flagWidth = totalWidth / 2
               finalPosition =
                 modulus(finalPosition + flagWidth, totalWidth) - flagWidth
               return `${finalPosition}%`
             }),
-            [isVertical ? 'top' : 'left']: `-${index * 100}%`,
+            [isVertical ? 'top' : `${isRtl ? 'right' : 'left'}`]: `-${
+              index * 100
+            }%`,
           }
         }
 
@@ -420,7 +441,7 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
       const style: CSSProperties &
         Record<'--slide-size' | '--track-offset', string> = {
         '--slide-size': `${props.slideSize}%`,
-        '--track-offset': `${props.trackOffset}%`,
+        '--track-offset': `${isRtl ? -props.trackOffset : props.trackOffset}%`,
       }
 
       const dragProps = { ...(props.allowTouchMove ? bind() : {}) }
@@ -457,7 +478,7 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
         props,
         <div
           className={classNames(classPrefix, `${classPrefix}-${direction}`)}
-          style={style}
+          style={{ ...style, direction: props.docDirection }}
         >
           <div
             ref={trackRef}

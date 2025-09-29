@@ -1,7 +1,7 @@
-import React, { useRef, useState } from 'react'
-import { render, testA11y, fireEvent, screen, mockDrag } from 'testing'
-import Swiper, { SwiperRef } from '..'
 import { act } from '@testing-library/react'
+import React, { useRef, useState } from 'react'
+import { fireEvent, mockDrag, render, screen, testA11y } from 'testing'
+import Swiper, { SwiperRef } from '..'
 
 const classPrefix = `adm-swiper`
 
@@ -377,6 +377,31 @@ describe('Swiper', () => {
         {index => <Swiper.Item key={index}>{index}</Swiper.Item>}
       </Swiper>
     )
+
+    expect(container).toMatchSnapshot()
+  })
+
+  test('rtl mode', async () => {
+    const { container } = render(<Swiper docDirection={'rtl'}>{items}</Swiper>)
+
+    console.log(expect(container))
+
+    expect(container).toMatchSnapshot()
+
+    const el = $$(`.${classPrefix}-track`)[0]
+    mockDrag(el, [
+      { clientX: 0, clientY: 0 },
+      {
+        clientX: 200,
+        clientY: 25,
+      },
+      {
+        clientX: 300,
+        clientY: 30,
+      },
+    ])
+
+    console.log(expect(container))
 
     expect(container).toMatchSnapshot()
   })

@@ -27,6 +27,7 @@ const config: IConfig = {
   },
   alias: {
     'antd-mobile/es': process.cwd() + '/src',
+    'antd-mobile$': process.cwd() + '/src/index.ts',
     'demos': process.cwd() + '/src/demos/index.ts',
   },
   metas: [

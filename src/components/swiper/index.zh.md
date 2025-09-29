@@ -44,6 +44,12 @@
 
 <code src="./demos/demo7.tsx" debug></code>
 
+### rtl 支持
+
+rtl 模式仅在 direction 属性为`horizontal`时生效
+
+<code src="./demos/demo-rtl.tsx"></code>
+
 ## Swiper
 
 ### 属性
@@ -65,6 +71,7 @@
 | trackOffset | 滑块轨道整体的偏移量百分比 | `number` | `0` |
 | total | 虚拟滚动时渲染总数，需要配合 renderProps 一同使用。（不支持 `loop`） | `number` | 5.34.0 |
 | stopPropagation | 阻止某些事件的冒泡 | `PropagationEvent[]` | `[]` | 5.28.0 |
+| docDirection | 文档排版方向，仅在 direction 为`horizontal`是生效 | `'ltr' \| 'rtl'` | `'ltr'` |
 
 ```ts
 type PropagationEvent = 'mouseup' | 'mousemove' | 'mousedown'
