@@ -13,6 +13,7 @@ import React, {
 } from 'react'
 import { staged } from 'staged-components'
 import { bound } from '../../utils/bound'
+import { canUseDom } from '../../utils/can-use-dom'
 import { devWarning } from '../../utils/dev-log'
 import { NativeProps, withNativeProps } from '../../utils/native-props'
 import { useRefState } from '../../utils/use-ref-state'
@@ -76,7 +77,6 @@ const defaultProps = {
   autoplayInterval: 3000,
   loop: false,
   direction: 'horizontal',
-  docDirection: 'ltr',
   slideSize: 100,
   trackOffset: 0,
   stuckAtBoundary: true,
@@ -102,8 +102,16 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
 
     const slideRatio = props.slideSize / 100
     const offsetRatio = props.trackOffset / 100
+    const computedDocDirection: 'ltr' | 'rtl' = useMemo(() => {
+      if (props.docDirection) return props.docDirection
+      if (!canUseDom) return 'ltr'
+      const el = document.documentElement || document.body
+      const dirAttr = el?.getAttribute('dir') || (el as any)?.dir
+      return dirAttr === 'rtl' ? 'rtl' : 'ltr'
+    }, [props.docDirection])
+
     const isRtl =
-      props.direction === 'horizontal' && props.docDirection === 'rtl'
+      props.direction === 'horizontal' && computedDocDirection === 'rtl'
 
     const { validChildren, count, renderChildren } = useMemo(() => {
       let count = 0
@@ -148,7 +156,6 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
       if (slideRatio * (mergedTotal - 1) < 1) {
         loop = false
       }
-      console.log('rtl-swiper', isRtl, props)
       const trackRef = useRef<HTMLDivElement>(null)
 
       function getSlidePixels() {
@@ -478,7 +485,7 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
         props,
         <div
           className={classNames(classPrefix, `${classPrefix}-${direction}`)}
-          style={{ ...style, direction: props.docDirection }}
+          style={{ ...style, direction: computedDocDirection }}
         >
           <div
             ref={trackRef}
