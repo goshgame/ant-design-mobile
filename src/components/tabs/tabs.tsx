@@ -1,8 +1,15 @@
 import { animated, useSpring } from '@react-spring/web'
 import { useIsomorphicLayoutEffect, useThrottleFn } from 'ahooks'
+import { canUseDom } from 'antd-mobile/src/utils/can-use-dom'
 import classNames from 'classnames'
 import type { FC, ReactElement, ReactNode } from 'react'
-import React, { isValidElement, useEffect, useRef, useState } from 'react'
+import React, {
+  isValidElement,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { bound } from '../../utils/bound'
 import { NativeProps, withNativeProps } from '../../utils/native-props'
 import { ShouldRender } from '../../utils/should-render'
@@ -56,7 +63,6 @@ export type TabsProps = {
 const defaultProps = {
   activeLineMode: 'auto',
   stretch: true,
-  direction: 'ltr',
 }
 
 export const Tabs: FC<TabsProps> = p => {
@@ -74,7 +80,15 @@ export const Tabs: FC<TabsProps> = p => {
   ] = useState(props.disableAutoScrollIsomorphicLayout ?? false)
   const panes: ReactElement<TabProps>[] = []
 
-  const isRTL = props.direction === 'rtl'
+  const computedDocDirection: 'ltr' | 'rtl' = useMemo(() => {
+    if (props.direction) return props.direction
+    if (!canUseDom) return 'ltr'
+    const el = document.documentElement || document.body
+    const dirAttr = el?.getAttribute('dir') || (el as any)?.dir
+    return dirAttr === 'rtl' ? 'rtl' : 'ltr'
+  }, [props.direction])
+
+  const isRTL = computedDocDirection === 'rtl'
 
   traverseReactNode(props.children, (child, index) => {
     if (!isValidElement<TabProps>(child)) return
