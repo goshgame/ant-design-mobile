@@ -1,6 +1,5 @@
 import { animated, useSpring } from '@react-spring/web'
 import { useIsomorphicLayoutEffect, useThrottleFn } from 'ahooks'
-import { canUseDom } from 'antd-mobile/src/utils/can-use-dom'
 import classNames from 'classnames'
 import type { FC, ReactElement, ReactNode } from 'react'
 import React, {
@@ -11,6 +10,7 @@ import React, {
   useState,
 } from 'react'
 import { bound } from '../../utils/bound'
+import { canUseDom } from '../../utils/can-use-dom'
 import { NativeProps, withNativeProps } from '../../utils/native-props'
 import { ShouldRender } from '../../utils/should-render'
 import { traverseReactNode } from '../../utils/traverse-react-node'
