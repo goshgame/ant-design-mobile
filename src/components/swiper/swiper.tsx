@@ -36,7 +36,7 @@ type ValuesToUnion<T, K extends keyof T = keyof T> = K extends keyof T
 type PropagationEvent = keyof typeof eventToPropRecord
 
 export type SwiperRef = {
-  swipeTo: (index: number) => void
+  swipeTo: (index: number, immediate?: boolean) => void
   swipeNext: () => void
   swipePrev: () => void
 }
@@ -272,9 +272,11 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
 
       function swipeTo(index: number, immediate = false) {
         const roundedIndex = isRtl ? -Math.round(index) : Math.round(index)
+        const indexToBound =
+          isRtl && !loop ? Math.abs(roundedIndex) : roundedIndex
         const targetIndex = loop
           ? modulus(roundedIndex, mergedTotal)
-          : bound(roundedIndex, 0, mergedTotal - 1)
+          : bound(indexToBound, 0, mergedTotal - 1)
 
         const currentIndex = getCurrent()
         if (targetIndex !== currentIndex) {
@@ -282,10 +284,9 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
         }
 
         setCurrent(targetIndex)
-
         const animations = api.start({
           position: isRtl
-            ? -(loop ? roundedIndex : boundIndex(roundedIndex)) * 100
+            ? -(loop ? roundedIndex : boundIndex(indexToBound)) * 100
             : (loop ? roundedIndex : boundIndex(roundedIndex)) * 100,
           immediate,
         })

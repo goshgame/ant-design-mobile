@@ -35,7 +35,7 @@ export default () => {
       </DemoBlock>
       <DemoBlock title='手动控制'>
         <Space direction='vertical' block>
-          <Swiper allowTouchMove={false} ref={ref} loop docDirection={'rtl'}>
+          <Swiper allowTouchMove={false} ref={ref} docDirection={'rtl'}>
             {items}
           </Swiper>
           <Space>
@@ -52,6 +52,14 @@ export default () => {
               }}
             >
               下一张
+            </Button>
+
+            <Button
+              onClick={() => {
+                ref.current?.swipeTo(2)
+              }}
+            >
+              跳到第3张
             </Button>
           </Space>
           <DemoDescription content='在禁用手势拖拽后，可以通过 Ref 进行手动翻页' />
