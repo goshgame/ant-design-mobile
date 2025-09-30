@@ -13,7 +13,6 @@ import React, {
 } from 'react'
 import { staged } from 'staged-components'
 import { bound } from '../../utils/bound'
-import { canUseDom } from '../../utils/can-use-dom'
 import { devWarning } from '../../utils/dev-log'
 import { NativeProps, withNativeProps } from '../../utils/native-props'
 import { useRefState } from '../../utils/use-ref-state'
@@ -102,16 +101,9 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
 
     const slideRatio = props.slideSize / 100
     const offsetRatio = props.trackOffset / 100
-    const computedDocDirection: 'ltr' | 'rtl' = useMemo(() => {
-      if (props.docDirection) return props.docDirection
-      if (!canUseDom) return 'ltr'
-      const el = document.documentElement || document.body
-      const dirAttr = el?.getAttribute('dir') || (el as any)?.dir
-      return dirAttr === 'rtl' ? 'rtl' : 'ltr'
-    }, [props.docDirection])
 
     const isRtl =
-      props.direction === 'horizontal' && computedDocDirection === 'rtl'
+      props.direction === 'horizontal' && props.docDirection === 'rtl'
 
     const { validChildren, count, renderChildren } = useMemo(() => {
       let count = 0
@@ -485,7 +477,11 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
         props,
         <div
           className={classNames(classPrefix, `${classPrefix}-${direction}`)}
-          style={{ ...style, direction: computedDocDirection }}
+          style={
+            props.docDirection
+              ? { ...style, direction: props.docDirection }
+              : style
+          }
         >
           <div
             ref={trackRef}
