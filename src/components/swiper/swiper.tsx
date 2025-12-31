@@ -51,6 +51,7 @@ export type SwiperProps = {
   docDirection?: 'ltr' | 'rtl'
   onIndexChange?: (index: number) => void
   onIndexChangeEnd?: (index: number) => void
+  onDragingChange?: (isDraging: boolean) => void
   indicatorProps?: Pick<PageIndicatorProps, 'color' | 'style' | 'className'>
   indicator?: false | ((total: number, current: number) => ReactNode)
   slideSize?: number
@@ -347,6 +348,10 @@ export const Swiper = forwardRef<SwiperRef, SwiperProps>(
           if (timeoutRef.current) window.clearTimeout(timeoutRef.current)
         }
       }, [autoplay, autoplayInterval, dragging, mergedTotal])
+
+      useEffect(() => {
+        props.onDragingChange?.(dragging)
+      }, [dragging])
 
       // ============================== Render ==============================
       // Render Item
